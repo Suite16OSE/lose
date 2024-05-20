@@ -2,10 +2,11 @@
 
 [org 0x100]  
 section .data
-    s_new:       db 'New$'
-    s_old:       db 'Old$'
-    s_cmdline:   db ' command line: $'
-    s_newline    db 0x0D, 0x0A, '$'
+    s_new:          db 'New$'
+    s_old:          db 'Old$'
+    s_cmdline:      db ' command line: $'
+    s_newline:      db 0x0D, 0x0A, '$'
+    s_running:      db 
 
 section .bss
     np_psp:       resw 2
