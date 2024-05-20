@@ -31,15 +31,15 @@ print_rest:
     mov dx, s_cmdline   ; rest of string
     int 0x21            ; call DOS
 print_cmdchars:
-    xor bh, bh
-    mov bl, [0x80]
-    add bl, 0x81
-    mov byte [bx], '$'
-    push bx
-    mov dx, 0x81
-    int 0x21
-    pop bx
-    mov byte [bx], 0x0d
+    xor bh, bh          ; zero b-high
+    mov bl, [0x80]      ; read length of command line from dos. max of 127
+    add bl, 0x81        ; add 0x81 (start of cmdline in PSP) to length to get end marker
+    mov byte [bx], '$'  ; replace with $ for DOS print call
+    push bx             ; save address so DOS doesn't mangle it
+    mov dx, 0x81        ; set address of string to print to PSP command line
+    int 0x21            ; ah=0x09, print string to stdout
+    pop bx              ; restore address to terminator character
+    mov byte [bx], 0x0d ; restore original 0x0d terminator
 print_newline:
     mov dx, s_newline   ; newline
     int 0x21            ; call DOS
