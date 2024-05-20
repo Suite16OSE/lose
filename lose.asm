@@ -24,20 +24,20 @@ parse_flags:
     xor bh, bh
     mov bl, 0x81            ; load command line string base address
     lea si, [bx]
-.loop:    
-    lodsb                   ; read a byte
-    cmp al, '/'             ; is it a flag? 
-    jne .afterflag          ; if not, skip.
-.flag:
-    lodsb                   ; load the flag
+    .loop:    
+        lodsb                   ; read a byte
+        cmp al, '/'             ; is it a flag? 
+        jne .afterflag          ; if not, skip.
+    .flag:
+        lodsb                   ; load the flag
 
 
-    mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
-    mov byte [si-1], 0x20  
-.afterflag:
-    inc cl                  
-    cmp ah, cl
-    jne .loop
+        mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
+        mov byte [si-1], 0x20  
+    .afterflag:
+        inc cl                  
+        cmp ah, cl
+        jne .loop
 .end:
     mov al, 1
     call print_cmdline      ; print modified command line passed to KERNEL 
