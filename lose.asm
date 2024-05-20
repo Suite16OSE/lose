@@ -6,7 +6,10 @@ section .data
     s_old:          db 'Old$'
     s_cmdline:      db ' command line: $'
     s_newline:      db 0x0D, 0x0A, '$'
-    s_running:      db 
+    s_running:      db 'Suite16 is already running in $'
+    s_standardmode: db 'Standard$'
+    s_enhancedmode: db '386 Enhanced$'
+    s_mode:         db ' mode.',
 
 section .bss
     np_psp:       resw 2
@@ -67,12 +70,18 @@ print_cmdline:
     int 0x21                ; ah=0x09, print string to stdout
     pop bx                  ; restore address to terminator character
     mov byte [bx], 0x0d     ; restore original 0x0d terminator
-.print_newline:
+    ret
+
+print_newline:
+    push ax
+    push dx
+    mov ah, 9
     mov dx, s_newline       ; newline
     int 0x21                ; call DOS
     pop dx                  ; restore registers
-    pop bx
+    pop ax
     ret
+
 
 show_help:
     ret
