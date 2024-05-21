@@ -7,9 +7,10 @@ section .data
     s_cmdline:      db ' command line: $'
     s_newline:      db 0x0D, 0x0A, '$'
     s_running:      db 'Suite16 is already running in $'
+    s_realmode:     db 'Real$'
     s_standardmode: db 'Standard$'
     s_enhancedmode: db '386 Enhanced$'
-    s_mode:         db ' mode.',
+    s_mode:         db ' mode.$'
 
 section .bss
     np_psp:       resw 2
@@ -30,16 +31,16 @@ parse_flags:
     lea si, [bx]
     .loop:    
         lodsb                   ; read a byte
+        inc cl                  ; increment counter     
         cmp al, '/'             ; is it a flag? 
         jne .afterflag          ; if not, skip.
     .flag:
         lodsb                   ; load the flag
-
+        inc cl                  ; increment the counter
 
         mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
         mov byte [si-1], 0x20  
-    .afterflag:
-        inc cl                  
+    .afterflag:            
         cmp ah, cl
         jne .loop
 .end:
@@ -70,6 +71,7 @@ print_cmdline:
     int 0x21                ; ah=0x09, print string to stdout
     pop bx                  ; restore address to terminator character
     mov byte [bx], 0x0d     ; restore original 0x0d terminator
+    call print_newline      ; and add the newline at the end.
     ret
 
 print_newline:
