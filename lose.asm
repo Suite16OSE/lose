@@ -72,6 +72,8 @@ print_cmdline:
     pop bx                  ; restore address to terminator character
     mov byte [bx], 0x0d     ; restore original 0x0d terminator
     call print_newline      ; and add the newline at the end.
+    pop dx                  ; restore registers
+    pop bx 
     ret
 
 print_newline:
@@ -83,7 +85,6 @@ print_newline:
     pop dx                  ; restore registers
     pop ax
     ret
-
 
 show_help:
     ret
