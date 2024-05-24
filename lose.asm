@@ -29,6 +29,9 @@ parse_flags:
     xor bh, bh
     mov bl, 0x81            ; load command line string base address
     lea si, [bx]
+.checklength:
+    test ah, ah
+    jz .end
     .loop:    
         lodsb                   ; read a byte
         inc cl                  ; increment counter     
