@@ -20,8 +20,8 @@ section .bss
 
 section .text
 start:
-    xor ax, ax
-    call print_cmdline
+    xor ax, ax              ; ensure AX (and AL) are zero
+    call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
 
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
