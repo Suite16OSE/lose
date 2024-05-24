@@ -82,13 +82,13 @@ print_cmdline:
     ret
 
 print_newline:
-    push ax
+    push ax                 ; save registers
     push dx
-    mov ah, 9
+    mov ah, 9               ; write string to stdout
     mov dx, s_newline       ; newline
     int 0x21                ; call DOS
     pop dx                  ; restore registers
-    pop ax
+    pop ax  
     ret
 
 show_help:
