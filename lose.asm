@@ -1,5 +1,6 @@
 ; lose.asm - Load the Suite16 Operating System Environment.
 
+bits 16
 [org 0x100]  
 section .data
     s_new:          db 'New$'
@@ -42,9 +43,12 @@ parse_flags:
     .flag:
         lodsb                   ; load the flag
         inc cl                  ; increment the counter
-
+        call .spaceflag         ;
+        jmp .afterflag
+    .spaceflag:
         mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
         mov byte [si-1], 0x20   ; two byte movs to avoid alignment issues
+        ret
     .afterflag:            
         cmp ah, cl              ; does our current character position equal the string length? are we at the end?
         jne .loop               ; if not, re-run the loop.
