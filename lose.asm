@@ -39,7 +39,7 @@ parse_flags:
         inc cl                  ; increment the counter
 
         mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
-        mov byte [si-1], 0x20  
+        mov byte [si-1], 0x20   ; two byte movs to avoid alignment issues
     .afterflag:            
         cmp ah, cl
         jne .loop
