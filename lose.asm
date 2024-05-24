@@ -46,8 +46,8 @@ parse_flags:
         mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
         mov byte [si-1], 0x20   ; two byte movs to avoid alignment issues
     .afterflag:            
-        cmp ah, cl
-        jne .loop
+        cmp ah, cl              ; does our current character position equal the string length? are we at the end?
+        jne .loop               ; if not, re-run the loop.
 .end:
     mov al, 1
     call print_cmdline      ; print modified command line passed to KERNEL 
