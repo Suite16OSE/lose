@@ -32,6 +32,8 @@ parse_flags:
     .loop:    
         lodsb                   ; read a byte
         inc cl                  ; increment counter     
+        cmp al, 0x0d            ; is it a carriage return?
+        je .end                 ; if it is, it's the end of the command line.
         cmp al, '/'             ; is it a flag? 
         jne .afterflag          ; if not, skip.
     .flag:
