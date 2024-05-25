@@ -47,12 +47,12 @@ parse_flags:
     .flag:
         lodsb                   ; load the flag
         inc cl                  ; increment the counter
-        cmp al, '3'             ; is it 386 mode?
+        cmp al, '3'             ; /3 - is it 386 mode? 
         jne .test286
         mov byte [i_mode], 3    ; set mode to 386 Enhanced
         jmp .closeflag
-    .test286:
-        cmp al, 's'             ; /S 
+    .test286:                   ; test for standard mode
+        cmp al, 's'             ; /s 
         je .smodewanted
         cmp al, 'S'             ; /S
         je .smodewanted
@@ -64,7 +64,7 @@ parse_flags:
     .test86:
         cmp al, 'r'             ; /r
         je .rmodewanted
-        cmp al, 'R'             ; /r
+        cmp al, 'R'             ; /R
         jne .afterflag          ; not our flag, leave it for KERNEL
     .rmodewanted:
         mov byte [i_mode], 0    ; set mode to Real (8086) mode
