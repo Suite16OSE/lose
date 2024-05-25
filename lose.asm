@@ -25,6 +25,9 @@ section .data
     s_help6:        db '   /?        Displays this help.$'
     s_help7:        db 'Submit bug reports or patches at https://github.com/Suite16OSE/lose$'
     s_helps:        db 'Starts Suite16 in $'
+    s_dosx:         db 'SYSTEM\\DOSX.EXE$'
+    s_wswap:        db 'SYSTEM\\WSWAP.EXE$'
+    s_win386:       db 'SYSTEM\\WIN386.EXE$'
 section .bss
     np_psp:         resw 2
     i_mode:         resb 1
