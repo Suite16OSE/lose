@@ -23,7 +23,7 @@ section .data
     s_help4:        db '   /S or /2  Starts Suite16 in Standard Mode.$'
     s_help5:        db '   /3        Starts Suite16 in 386 Enhanced Mode.$'
     s_help6:        db '   /?        Displays this help.$'
-
+    s_help7:        db 'Submit bug reports at https://github.com/Suite16OSE/$'
 
 section .bss
     np_psp:         resw 2
