@@ -7,11 +7,15 @@ section .data
     s_old:          db 'Old$'
     s_cmdline:      db ' command line: $'
     s_newline:      db 0x0D, 0x0A, '$'
+    s_suite16:      db 'Suite16$'
+    s_windows:      db 'Windows$'
+    s_wfw:          db 'Windows for Workgroups$'
     s_running:      db 'Suite16 is already running in $'
     s_realmode:     db 'Real$'
     s_standardmode: db 'Standard$'
     s_enhancedmode: db '386 Enhanced$'
     s_mode:         db ' mode.$'
+    s_modesel:      db 'Mode requested: n.$'
 
 section .bss
     np_psp:       resw 2
@@ -43,7 +47,29 @@ parse_flags:
     .flag:
         lodsb                   ; load the flag
         inc cl                  ; increment the counter
-        call .spaceflag         ;
+        cmp al, '3'             ; is it 386 mode?
+        jne .test286
+        mov byte [i_mode], 3    ; set mode to 386 Enhanced
+        jmp .closeflag
+    .test286:
+        cmp al, 's'             ; /S 
+        je .smodewanted
+        cmp al, 'S'             ; /S
+        je .smodewanted
+        cmp al, '2'             ; /2
+        jne .test86
+    .smodewanted:
+        mov byte [i_mode], 2    ; set mode to Standard (286) mode
+        jmp .closeflag
+    .test86:
+        cmp al, 'r'             ; /r
+        je .rmodewanted
+        cmp al, 'R'             ; /r
+        jne .afterflag          ; not our flag, leave it for KERNEL
+    .rmodewanted:
+        mov byte [i_mode], 0    ; set mode to Real (8086) mode
+    .closeflag:
+        call .spaceflag         ; if our flag, clear it out
         jmp .afterflag
     .spaceflag:
         mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
@@ -53,9 +79,26 @@ parse_flags:
         cmp ah, cl              ; does our current character position equal the string length? are we at the end?
         jne .loop               ; if not, re-run the loop.
 .end:
+    call print_mode         ; print final decided mode
     mov al, 1
     call print_cmdline      ; print modified command line passed to KERNEL 
     call exit               ; exit LOSE.COM
+
+print_mode:
+    push cx
+    push dx
+    push ax
+    mov dl, [i_mode]       ; move mode into dl 
+    add dl, 0x30           ; turn into ASCII digit
+    mov byte [s_modesel+0x10], dl  ; inset digit into string
+    mov dx, s_modesel      ; The "Mode selected: " string
+    mov ah, 9              ; DOS print string
+    int 0x21               ; call DOS
+    call print_newline     ; finish with newline
+    pop ax
+    pop dx                 ; restore stack
+    pop cx          
+    ret
 
 print_cmdline:
     push bx                 ; save registers
