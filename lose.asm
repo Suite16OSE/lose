@@ -19,12 +19,12 @@ section .data
     s_wrongdos:     db 'Incorrect DOS version.$'
     s_help:         db 'LOSE.COM: Launch Suite16.$'
     s_help2:        db 'Usage:$'
-    s_help3:        db '   /R        Starts Suite16 in Real Mode.$'
-    s_help4:        db '   /S or /2  Starts Suite16 in Standard Mode.$'
-    s_help5:        db '   /3        Starts Suite16 in 386 Enhanced Mode.$'
+    s_help3:        db '   /R        $'
+    s_help4:        db '   /S or /2  $'
+    s_help5:        db '   /3        $'
     s_help6:        db '   /?        Displays this help.$'
-    s_help7:        db 'Submit bug reports at https://github.com/Suite16OSE/$'
-
+    s_help7:        db 'Submit bug reports or patches at https://github.com/Suite16OSE/lose$'
+    s_helps:        db 'Starts Suite16 in $'
 section .bss
     np_psp:         resw 2
     i_mode:         resb 1
@@ -36,7 +36,7 @@ section .text
 start:
     xor ax, ax              ; ensure AX (and AL) are zero
     call check_dos_version  ; we need at least 3.1
-    call init_memory        ; initialize LOSE.COM memory
+;    call init_memory        ; initialize LOSE.COM memory
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
@@ -151,10 +151,49 @@ print_newline:
     ret
 
 show_help:                  ; Only shown on /? and doesn't return.
-    mov al, 9               ; print string call, we're gonna be making a bunch of these and bailing.
-
+    mov ah, 9               ; print string call, we're gonna be making a bunch of these and bailing.
+    mov dx, s_help          ; Print the line showing what the program does
+    int 0x21                ; call DOS
+    call print_newline
+    call print_newline      
+    mov dx, s_help2
+    int 0x21
+    call print_newline
+    call print_newline
+    mov dx, s_help3
+    int 0x21
+    mov dx, s_realmode
+    call .opthelper
+    call print_newline
+    mov dx, s_help4
+    int 0x21
+    mov dx, s_standardmode
+    call .opthelper
+    call print_newline
+    mov dx, s_help5
+    int 0x21
+    mov dx, s_enhancedmode
+    call .opthelper
+    call print_newline
+    mov dx, s_help6
+    int 0x21
+    call print_newline
+    call print_newline
+    mov dx, s_help7
+    int 0x21
+    call print_newline
     call exit
-
+.opthelper:
+    push dx
+    mov dx, s_helps
+    int 0x21
+    pop dx
+    push dx
+    int 0x21
+    mov dx, s_mode
+    int 0x21
+    pop dx
+    ret
 
 check_dos_version:
     push ax                 ; save registers
