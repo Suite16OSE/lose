@@ -156,7 +156,7 @@ show_help:                  ; Only shown on /? and doesn't return.
     int 0x21                ; call DOS
     call print_newline
     call print_newline      
-    mov dx, s_help2
+    mov dx, s_help2         ; prints "Usage:"
     int 0x21
     call print_newline
     call print_newline
@@ -164,17 +164,14 @@ show_help:                  ; Only shown on /? and doesn't return.
     int 0x21
     mov dx, s_realmode
     call .opthelper
-    call print_newline
     mov dx, s_help4
     int 0x21
     mov dx, s_standardmode
     call .opthelper
-    call print_newline
     mov dx, s_help5
     int 0x21
     mov dx, s_enhancedmode
     call .opthelper
-    call print_newline
     mov dx, s_help6
     int 0x21
     call print_newline
@@ -183,16 +180,15 @@ show_help:                  ; Only shown on /? and doesn't return.
     int 0x21
     call print_newline
     call exit
-.opthelper:
-    push dx
-    mov dx, s_helps
+.opthelper:             ; ah is already 9 = DOS print string
+    push dx             ; save the mode string pointer
+    mov dx, s_helps     ; print the "Start Suite16 in " string
     int 0x21
-    pop dx
-    push dx
+    pop dx              ; restore mode string pointer
+    int 0x21            ; print it 
+    mov dx, s_mode      ; print the "mode ." string
     int 0x21
-    mov dx, s_mode
-    int 0x21
-    pop dx
+    call print_newline  ; finish with newline
     ret
 
 check_dos_version:
