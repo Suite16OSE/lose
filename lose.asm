@@ -16,6 +16,7 @@ section .data
     s_enhancedmode: db '386 Enhanced$'
     s_mode:         db ' mode.$'
     s_modesel:      db 'Mode requested: n.$'
+    s_wrongdos:     db 'Incorrect DOS version.$'
 
 section .bss
     np_psp:       resw 2
@@ -26,7 +27,7 @@ section .text
 start:
     xor ax, ax              ; ensure AX (and AL) are zero
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
-
+    call check_dos_version  ; we need at least 3.1
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
 parse_flags:
@@ -137,6 +138,9 @@ print_newline:
     ret
 
 show_help:
+    ret
+
+check_dos_version:
     ret
 
 exit:
