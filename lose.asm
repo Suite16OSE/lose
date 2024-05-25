@@ -18,9 +18,12 @@ section .data
     s_modesel:      db 'Mode requested: n.$'
     s_wrongdos:     db 'Incorrect DOS version.$'
 
+
 section .bss
-    np_psp:       resw 2
-    i_mode:       resb 1
+    np_psp:         resw 2
+    i_mode:         resb 1
+    i_dosminor      resb 1
+    i_dosmajor      resb 1
 
 
 section .text
@@ -147,6 +150,22 @@ show_help:
     ret
 
 check_dos_version:
+    push ax
+    push dx
+    mov ax, 0x3001          ; get DOS version
+    int 0x21                ; call DOS
+    mov byte [i_dosmajor], al ; DOS major version
+    mov byte [i_dosminor], ah ; DOS minor version
+    cmp ah, 3
+    jnl .end
+    mov dx, s_wrongdos      ; load "incorrect DOS version" string
+    mov ah, 9               ; print string
+    int 0x21                ; call DOS
+    call print_newline
+    call exit
+.end:
+    pop dx
+    pop ax
     ret
 
 exit:
