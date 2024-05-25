@@ -17,6 +17,12 @@ section .data
     s_mode:         db ' mode.$'
     s_modesel:      db 'Mode requested: n.$'
     s_wrongdos:     db 'Incorrect DOS version.$'
+    s_help:         db 'LOSE.COM: Launch Suite16.$'
+    s_help2:        db 'Usage:$'
+    s_help3:        db '   /R        Starts Suite16 in Real Mode.$'
+    s_help4:        db '   /S or /2  Starts Suite16 in Standard Mode.$'
+    s_help5:        db '   /3        Starts Suite16 in 386 Enhanced Mode.$'
+    s_help6:        db '   /?        Displays this help.$'
 
 
 section .bss
@@ -29,9 +35,9 @@ section .bss
 section .text
 start:
     xor ax, ax              ; ensure AX (and AL) are zero
-    mov byte [i_mode], al   ; set mode to zero (initialize memory)
-    call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     call check_dos_version  ; we need at least 3.1
+    call init_memory        ; initialize LOSE.COM memory
+    call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
 parse_flags:
@@ -81,7 +87,9 @@ parse_flags:
         mov byte [si-2], 0x20   ; replace flag with spaces for KERNEL 
         mov byte [si-1], 0x20   ; two byte movs to avoid alignment issues
         ret
-    .afterflag:            
+    .afterflag:
+        cmp al, '?'             ; /? 
+        je show_help            ; if so, show help and exit            
         cmp ah, cl              ; does our current character position equal the string length? are we at the end?
         jne .loop               ; if not, re-run the loop.
 .end:
@@ -142,13 +150,11 @@ print_newline:
     pop ax  
     ret
 
-show_help:
-    push ax                 ; save registers
-    push dx
-    ; TODO: do this.
-    pop dx                  ; restore registers
-    pop ax                  
-    ret
+show_help:                  ; Only shown on /? and doesn't return.
+    mov al, 9               ; print string call, we're gonna be making a bunch of these and bailing.
+
+    call exit
+
 
 check_dos_version:
     push ax                 ; save registers
@@ -168,6 +174,15 @@ check_dos_version:
     pop dx                  ; restore registers
     pop ax
     ret
+
+init_memory:
+    mov byte [i_mode], al   ; set mode to zero (initialize memory)
+    pop bx                  ; grab return pointer
+    mov sp, 0x2000          ; move stack pointer
+    push bx                 ; restore return pointer to stack
+                            ; DOS memory management API calls go here
+    ret                     ; return for now 
+
 
 exit:
     ; Terminate program, value in al
