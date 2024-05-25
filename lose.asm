@@ -150,21 +150,21 @@ show_help:
     ret
 
 check_dos_version:
-    push ax
+    push ax                 ; save registers
     push dx
     mov ax, 0x3001          ; get DOS version
     int 0x21                ; call DOS
     mov byte [i_dosmajor], al ; DOS major version
     mov byte [i_dosminor], ah ; DOS minor version
-    cmp ah, 3
-    jnl .end
+    cmp al, 3               ; check DOS major
+    jnl .end                ; if not less than 3, finish function, else error and quit
     mov dx, s_wrongdos      ; load "incorrect DOS version" string
     mov ah, 9               ; print string
     int 0x21                ; call DOS
-    call print_newline
+    call print_newline      
     call exit
-.end:
-    pop dx
+.end:                       ; DOS is at least 3.x, keep going
+    pop dx                  ; restore registers
     pop ax
     ret
 
