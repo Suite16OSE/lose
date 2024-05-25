@@ -85,8 +85,7 @@ parse_flags:
     call exit               ; exit LOSE.COM
 
 print_mode:
-    push cx
-    push dx
+    push dx                ; save stack
     push ax
     mov dl, [i_mode]       ; move mode into dl 
     add dl, 0x30           ; turn into ASCII digit
@@ -96,8 +95,7 @@ print_mode:
     int 0x21               ; call DOS
     call print_newline     ; finish with newline
     pop ax
-    pop dx                 ; restore stack
-    pop cx          
+    pop dx                 ; restore stack         
     ret
 
 print_cmdline:
