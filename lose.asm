@@ -36,7 +36,7 @@ section .text
 start:
     xor ax, ax              ; ensure AX (and AL) are zero
     call check_dos_version  ; we need at least 3.1
-;    call init_memory        ; initialize LOSE.COM memory
+    call init_memory        ; initialize LOSE.COM memory
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
