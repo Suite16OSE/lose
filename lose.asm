@@ -36,8 +36,8 @@ parse_flags:
     mov bl, 0x81            ; load command line string base address
     lea si, [bx]
 .checklength:
-    test ah, ah
-    jz .end
+    test ah, ah                 ; is length zero?
+    jz .end                     ; skip command line processing if so. 
     .loop:    
         lodsb                   ; read a byte
         inc cl                  ; increment counter     
@@ -139,6 +139,11 @@ print_newline:
     ret
 
 show_help:
+    push ax                 ; save registers
+    push dx
+    ; TODO: do this.
+    pop dx                  ; restore registers
+    pop ax                  
     ret
 
 check_dos_version:
