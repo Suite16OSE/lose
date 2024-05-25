@@ -48,6 +48,7 @@ parse_flags:
     .flag:
         lodsb                   ; load the flag
         inc cl                  ; increment the counter
+    .test386:
         cmp al, '3'             ; /3 - is it 386 mode? 
         jne .test286
         mov byte [i_mode], 3    ; set mode to 386 Enhanced
