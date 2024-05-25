@@ -29,6 +29,7 @@ section .bss
 section .text
 start:
     xor ax, ax              ; ensure AX (and AL) are zero
+    mov byte [i_mode], al   ; set mode to zero (initialize memory)
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     call check_dos_version  ; we need at least 3.1
     ; start parsing the command line 
