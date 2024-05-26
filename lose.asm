@@ -28,6 +28,7 @@ section .data
     s_dosx:         db 'SYSTEM\\DOSX.EXE$'
     s_wswap:        db 'SYSTEM\\WSWAP.EXE$'
     s_win386:       db 'SYSTEM\\WIN386.EXE$'
+    s_errmem:       db 'Error reallocating memory!$'
 section .bss
     np_psp:         resw 2
     i_mode:         resb 1
@@ -217,10 +218,21 @@ init_memory:
     mov byte [i_mode], al   ; set mode to zero (initialize memory)
     pop bx                  ; grab return pointer
     mov sp, 0x2000          ; move stack pointer
+    mov bp, sp              ; base pointer from stack pointer
     push bx                 ; restore return pointer to stack
-                            ; DOS memory management API calls go here
-    ret                     ; return for now 
-
+    mov bx, sp              ; move stack pointer into bx\
+    shr bx, 4               ; shift right four bits to divide by 16 and get number of paragraphs
+    mov ah, 0x4a            ; set memory block size
+    int 0x21                ; call DOS
+    jc .errmsg              ; if failed, error and exit
+    ret                     ; return
+.errmsg:
+    mov dx, s_errmem        ; failure message into memory
+    mov ah, 9               ; print string
+    int 0x21
+    call print_newline
+    call exit
+    ret
 
 exit:
     ; Terminate program, value in al
