@@ -31,9 +31,9 @@ section .data
 section .bss
     np_psp:         resw 2
     i_mode:         resb 1
-    i_dosminor      resb 1
-    i_dosmajor      resb 1
-
+    i_dosminor:     resb 1
+    i_dosmajor:     resb 1
+    s_numtemp:      resb 10
 
 section .text
 start:
