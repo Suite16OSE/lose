@@ -205,11 +205,12 @@ check_dos_version:
     mov byte [i_dosminor], ah ; DOS minor version
     cmp al, 3               ; check DOS major
     jnl .end                ; if not less than 3, finish function, else error and quit
-    jz .dos1exit            ; Can't use AH=4Ch on DOS 1.x
     mov dx, s_wrongdos      ; load "incorrect DOS version" string
     mov ah, 9               ; print string
     int 0x21                ; call DOS
     call print_newline      
+    test al, al             ; major version zero because DOS 1.x doesn't have this call? 
+    jz .dos1exit            ; Can't use AH=4Ch on DOS 1.x
     call exit
 .end:                       ; DOS is at least 3.x, keep going
     pop dx                  ; restore registers
