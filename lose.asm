@@ -35,6 +35,7 @@ section .data
     s_slowkrnl:     db 'KERNEL.EXE', 0
     s_win1boot:     db 'WIN100.BIN', 0
     s_win2boot:     db 'WIN200.BIN', 0
+    s_suite16krnl:  db 'S16KRNL.EXE', 0
 
 section .bss
     np_psp:         resw 2
