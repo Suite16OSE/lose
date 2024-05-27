@@ -35,6 +35,7 @@ section .bss
     i_dosminor:     resb 1
     i_dosmajor:     resb 1
     s_numtemp:      resb 10
+    f_int23orig:    
 
 section .text
 start:
@@ -204,6 +205,7 @@ check_dos_version:
     mov byte [i_dosminor], ah ; DOS minor version
     cmp al, 3               ; check DOS major
     jnl .end                ; if not less than 3, finish function, else error and quit
+    jz .dos1exit            ; Can't use AH=4Ch on DOS 1.x
     mov dx, s_wrongdos      ; load "incorrect DOS version" string
     mov ah, 9               ; print string
     int 0x21                ; call DOS
@@ -213,6 +215,8 @@ check_dos_version:
     pop dx                  ; restore registers
     pop ax
     ret
+.dos1exit:
+    int 0x20                ; DOS 1.x exit
 
 init_memory:
     mov byte [i_mode], al   ; set mode to zero (initialize memory)
