@@ -209,7 +209,7 @@ check_dos_version:
     mov ah, 9               ; print string
     int 0x21                ; call DOS
     call print_newline      
-    test al, al             ; major version zero because DOS 1.x doesn't have this call? 
+    test al, al             ; is major version zero? (because DOS 1.x doesn't have this call) 
     jz .dos1exit            ; Can't use AH=4Ch on DOS 1.x
     call exit
 .end:                       ; DOS is at least 3.x, keep going
