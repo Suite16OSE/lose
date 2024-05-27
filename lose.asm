@@ -25,10 +25,11 @@ section .data
     s_help6:        db '   /?        Displays this help.$'
     s_help7:        db 'Submit bug reports or patches at https://github.com/Suite16OSE/lose$'
     s_helps:        db 'Starts Suite16 in $'
+    s_errmem:       db 'Error reallocating memory!$'
     s_dosx:         db 'SYSTEM\\DOSX.EXE', 0
     s_wswap:        db 'SYSTEM\\WSWAP.EXE', 0
     s_win386:       db 'SYSTEM\\WIN386.EXE', 0
-    s_errmem:       db 'Error reallocating memory!$'
+
 
 section .bss
     np_psp:         resw 2
