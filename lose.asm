@@ -224,7 +224,7 @@ init_memory:
     mov sp, 0x2000          ; move stack pointer
     mov bp, sp              ; base pointer from stack pointer
     push bx                 ; restore return pointer to stack
-    mov bx, sp              ; move stack pointer into bx\
+    mov bx, sp              ; move stack pointer into bx
     shr bx, 4               ; shift right four bits to divide by 16 and get number of paragraphs
     mov ah, 0x4a            ; set memory block size
     int 0x21                ; call DOS
