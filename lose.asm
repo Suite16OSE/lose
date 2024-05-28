@@ -43,7 +43,7 @@ section .bss
     i_dosminor:     resb 1
     i_dosmajor:     resb 1
     s_numtemp:      resb 10
-    f_int23orig:    
+    f_int23orig:    resb 4  ; ctrl-c interrupt original handler address
 
 section .text
 start:
@@ -235,8 +235,10 @@ init_memory:
     push bx                 ; restore return pointer to stack
     mov bx, sp              ; move stack pointer into bx
     shr bx, 4               ; shift right four bits to divide by 16 and get number of paragraphs
+    push ax
     mov ah, 0x4a            ; set memory block size
     int 0x21                ; call DOS
+    pop ax
     jc .errmsg              ; if failed, error and exit
     ret                     ; return
 .errmsg:
