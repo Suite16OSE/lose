@@ -204,6 +204,9 @@ show_help:                  ; Only shown on /? and doesn't return.
     call print_newline  ; finish with newline
     ret
 
+check_win_version:
+    
+
 check_dos_version:
     push ax                 ; save registers
     push dx
