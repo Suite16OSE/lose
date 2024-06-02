@@ -26,12 +26,12 @@ section .data
     s_help7:        db 'Submit bug reports or patches at https://github.com/Suite16OSE/lose$'
     s_helps:        db 'Starts Suite16 in $'
     s_errmem:       db 'Error reallocating memory!$'
-    s_dosx:         db 'SYSTEM\\DOSX.EXE', 0
-    s_wswap:        db 'SYSTEM\\WSWAP.EXE', 0
-    s_krnl386:      db 'SYSTEM\\KRNL386.EXE', 0
-    k_krnl286:      db 'SYSTEM\\KRNL286.EXE', 0
-    s_win386:       db 'SYSTEM\\WIN386.EXE', 0
-    s_30rkrnl:      db 'SYSTEM\\KERNEL.EXE', 0
+    s_dosx:         db 'SYSTEM\DOSX.EXE', 0
+    s_wswap:        db 'SYSTEM\WSWAP.EXE', 0
+    s_krnl386:      db 'SYSTEM\KRNL386.EXE', 0
+    k_krnl286:      db 'SYSTEM\KRNL286.EXE', 0
+    s_win386:       db 'SYSTEM\WIN386.EXE', 0
+    s_30rkrnl:      db 'SYSTEM\KERNEL.EXE', 0
     s_slowkrnl:     db 'KERNEL.EXE', 0
     s_win1boot:     db 'WIN100.BIN', 0
     s_win2boot:     db 'WIN200.BIN', 0
