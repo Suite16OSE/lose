@@ -26,7 +26,7 @@ section .data
     s_help7:        db 'Submit bug reports or patches at https://github.com/Suite16OSE/lose$'
     s_helps:        db 'Starts Suite16 in $'
     s_errmem:       db 'Error reallocating memory!$'
-    s_dosx:         db 'SYSTEM\DOSX.EXE', 0
+    s_dosx:         db 'SYSTEM\DOSX.EXE', 0           ; nasm doesn't do \ escapes here
     s_wswap:        db 'SYSTEM\WSWAP.EXE', 0
     s_krnl386:      db 'SYSTEM\KRNL386.EXE', 0
     k_krnl286:      db 'SYSTEM\KRNL286.EXE', 0
