@@ -208,6 +208,9 @@ check_win_version:
     push ax
     push bx
     push dx
+    mov ah, 0x16        ; test 2: Look for VMM
+    xor al, al          ; subfunction 0
+    int 0x2f            ; call multiplex
     pop dx
     pop bx
     pop ax
@@ -257,6 +260,10 @@ init_memory:
     call print_newline
     call exit
     ret
+
+int2f_handler:
+
+    iret
 
 exit:
     ; Terminate program, value in al
