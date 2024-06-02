@@ -209,12 +209,20 @@ check_win_version:
     push bx
     push dx
     mov ah, 0x16        ; test 2: Look for VMM
-    xor al, al          ; subfunction 0
+    xor al, al          ; subfunction 0 - W386_Get_Version 
     int 0x2f            ; call multiplex
+    and al, 0x7f        ; make 0x80 become 0x00. Values of 0x00 and 0x80 mean VMM isn't running.
+    test al, al         ; is al zero or not? 
+    jnz already_running ; VMM is already running - bail with appropirate message
     pop dx
     pop bx
     pop ax
     ret
+
+already_running:
+    
+    call exit
+
 
 check_dos_version:
     push ax                 ; save registers
@@ -240,7 +248,9 @@ check_dos_version:
     int 0x20                ; DOS 1.x exit
 
 init_memory:
+    ; the work here is twofold: first, initialize all .bss variables that need definite values  
     mov byte [i_mode], al   ; set mode to zero (initialize memory)
+
     pop bx                  ; grab return pointer
     mov sp, 0x2000          ; move stack pointer
     mov bp, sp              ; base pointer from stack pointer
