@@ -54,6 +54,7 @@ start:
     call check_dos_version  ; we need at least 3.1
     call init_memory        ; initialize LOSE.COM memory
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
+    call check_win_version  ; Check if Windows is running
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
 parse_flags:
@@ -216,7 +217,7 @@ check_win_version:
     int 0x2f            ; call multiplex
     and al, 0x7f        ; make 0x80 become 0x00. Values of 0x00 and 0x80 mean VMM isn't running.
     test al, al         ; is al zero or not? 
-    jnz .notvmm         ; if it is, keep going
+    jz .notvmm          ; if it is, keep going
     mov byte [i_mode], 3 ; otherwise VMM is already running - bail with appropirate message
     call already_running    
 .notvmm:
