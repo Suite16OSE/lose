@@ -216,16 +216,38 @@ check_win_version:
     int 0x2f            ; call multiplex
     and al, 0x7f        ; make 0x80 become 0x00. Values of 0x00 and 0x80 mean VMM isn't running.
     test al, al         ; is al zero or not? 
-    jnz already_running ; VMM is already running - bail with appropirate message
+    jnz .notvmm         ; if it is, keep going
+    mov byte [i_mode], 3 ; otherwise VMM is already running - bail with appropirate message
+    call already_running    
+.notvmm:
     pop dx
     pop bx
     pop ax
     ret
 
 already_running:
-    
-    call exit
-
+    mov ah, 9               ; Here's where we print our "already running" 
+    mov dx, s_running
+    int 0x21
+    mov byte cl, [i_mode]   ; load the mode
+    cmp cl, 3               ; 386 Enhanced mode?
+    je .enhanced            ; enhanced.
+    cmp cl, 2               ; standard mode?
+    je .standard            ; standard
+.real:                      ; otherwise just assume real mode
+    mov dx, s_realmode
+    jmp .continue
+.standard:
+    mov dx, s_standardmode
+    jmp .continue
+.enhanced:
+    mov dx, s_enhancedmode
+.continue: 
+    int 0x21                ; print the appropriate mode string
+    mov dx, s_mode          ; the ending word "mode." 
+    int 0x21
+    call print_newline      ; newline
+    call exit               ; and exit
 
 check_dos_version:
     push ax                 ; save registers
