@@ -258,6 +258,7 @@ init_memory:
     mov word [f_int23orig+2], ax  ; and the offset
     mov word [f_int2forig], ax    ; and the same for the multiplex interrupt
     mov word [f_int2forig+2], ax  ; and the offset
+    ; second, adjust the allocated memory area to use only 16K and free the rest for Suite16/Windows to use.
     pop bx                  ; grab return pointer
     mov sp, 0x2000          ; move stack pointer
     mov bp, sp              ; base pointer from stack pointer
