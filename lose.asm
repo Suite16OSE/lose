@@ -279,6 +279,10 @@ init_memory:
     call exit
     ret
 
+int23_handler:
+    ; Ctrl+C handler
+    iret
+
 int2f_handler:
 
     iret
@@ -288,3 +292,4 @@ exit:
     mov ah, 0x4C  ; DOS function 4Ch - terminate program
     int 0x21      ; Call DOS interrupt
     nop           ; end of .text canary - data follows!
+    hlt           ; if for some reason we hit the canadry, just stop.
