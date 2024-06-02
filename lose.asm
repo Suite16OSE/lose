@@ -205,7 +205,13 @@ show_help:                  ; Only shown on /? and doesn't return.
     ret
 
 check_win_version:
-    
+    push ax
+    push bx
+    push dx
+    pop dx
+    pop bx
+    pop ax
+    ret
 
 check_dos_version:
     push ax                 ; save registers
