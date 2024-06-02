@@ -173,10 +173,10 @@ show_help:                  ; Only shown on /? and doesn't return.
     int 0x21
     call print_newline
     call print_newline
-    mov dx, s_help3
+    mov dx, s_help3         ; "start in"
     int 0x21
     mov dx, s_realmode
-    call .opthelper
+    call .opthelper         ; "read mode" 
     mov dx, s_help4
     int 0x21
     mov dx, s_standardmode
