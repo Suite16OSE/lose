@@ -42,8 +42,11 @@ section .bss
     i_mode:         resb 1
     i_dosminor:     resb 1
     i_dosmajor:     resb 1
+    i_winmajor:     resb 1
+    i_winminor:     resb 1
     s_numtemp:      resb 10
     f_int23orig:    resb 4  ; ctrl-c interrupt original handler address
+    f_int2forig:    resb 4  ; multiplex interrupt original handler address
 
 section .text
 start:
@@ -248,9 +251,13 @@ check_dos_version:
     int 0x20                ; DOS 1.x exit
 
 init_memory:
-    ; the work here is twofold: first, initialize all .bss variables that need definite values  
+    ; the work here is twofold: first, initialize all .bss variables that need definite values 
+    ; AX should be zero (xor'd with itself right before this function is called)  
     mov byte [i_mode], al   ; set mode to zero (initialize memory)
-
+    mov word [f_int23orig], ax    ; here we make sure we zero out the area where we store the oringinal interrupt vector for ^C
+    mov word [f_int23orig+2], ax  ; and the offset
+    mov word [f_int2forig], ax    ; and the same for the multiplex interrupt
+    mov word [f_int2forig+2], ax  ; and the offset
     pop bx                  ; grab return pointer
     mov sp, 0x2000          ; move stack pointer
     mov bp, sp              ; base pointer from stack pointer
