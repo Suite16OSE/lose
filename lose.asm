@@ -316,4 +316,4 @@ exit:
     mov ah, 0x4C  ; DOS function 4Ch - terminate program
     int 0x21      ; Call DOS interrupt
     nop           ; end of .text canary - data follows!
-    hlt           ; if for some reason we hit the canadry, just stop.
+    hlt           ; if for some reason we hit the canary, just stop.
