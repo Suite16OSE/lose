@@ -223,17 +223,16 @@ check_win_version:
     and al, 0x7f        ; make 0x80 become 0x00. Values of 0x00 and 0x80 mean VMM isn't running.
     test al, al         ; is al zero or not? 
     jz .notvmm          ; if it is, keep going
+    mov byte [i_running], 1     ; yes, we're running
     cmp al, 1           ; if it's 1, then Windows/386 2.x is running
     jg .win3x           ; else we're dealing with Windows 3.0 or later
 .win386:    
     mov byte [i_winmajor], 2    ;
     mov byte [i_winminor], 11   ; we're just guessing here, don't really have a good way to deduce
-    mov byte [i_running], 1     ; yes, we're running
     jmp .end                    ; and go
 .win3x:
     mov byte [i_winmajor], al   ; as reported by VMM
     mov byte [i_winminor], ah
-    mov byte [i_running], 1     ; yes, we're running
     jmp .end
 .notvmm:
 
