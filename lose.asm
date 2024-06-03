@@ -45,6 +45,7 @@ section .bss
     i_winmajor:     resb 1
     i_winminor:     resb 1
     s_numtemp:      resb 10
+    i_running:      resb 1  ; is Suite16 or Windows running? 
     f_int23orig:    resb 4  ; ctrl-c interrupt original handler address
     f_int2forig:    resb 4  ; multiplex interrupt original handler address
 
@@ -55,6 +56,9 @@ start:
     call init_memory        ; initialize LOSE.COM memory
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     call check_win_version  ; Check if Windows is running
+    mov byte ah, [i_running]; are we running already?
+    test ah, ah
+    jnz already_running     ; if so, bail
     ; start parsing the command line 
     mov ah, [0x80]          ; strlen(GetCommandLine())
 parse_flags:
@@ -219,9 +223,22 @@ check_win_version:
     and al, 0x7f        ; make 0x80 become 0x00. Values of 0x00 and 0x80 mean VMM isn't running.
     test al, al         ; is al zero or not? 
     jz .notvmm          ; if it is, keep going
-    mov byte [i_mode], 3 ; otherwise VMM is already running - bail with appropirate message
-    call already_running    
+    cmp al, 1           ; if it's 1, then Windows/386 2.x is running
+    jg .win3x           ; else we're dealing with Windows 3.0 or later
+.win386:    
+    mov byte [i_winmajor], 2    ;
+    mov byte [i_winminor], 11   ; we're just guessing here, don't really have a good way to deduce
+    mov byte [i_running], 1     ; yes, we're running
+    jmp .end                    ; and go
+.win3x:
+    mov byte [i_winmajor], al   ; as reported by VMM
+    mov byte [i_winminor], ah
+    mov byte [i_running], 1     ; yes, we're running
+    jmp .end
 .notvmm:
+
+
+.end:
     pop dx
     pop bx
     pop ax
@@ -278,6 +295,7 @@ init_memory:
     ; the work here is twofold: first, initialize all .bss variables that need definite values 
     ; AX should be zero (xor'd with itself right before this function is called)  
     mov byte [i_mode], al   ; set mode to zero (initialize memory)
+    mov byte [i_running], al      ; Assume Windows/Suite16 is not running until we verify that it is.
     mov word [f_int23orig], ax    ; here we make sure we zero out the area where we store the oringinal interrupt vector for ^C
     mov word [f_int23orig+2], ax  ; and the offset
     mov word [f_int2forig], ax    ; and the same for the multiplex interrupt
