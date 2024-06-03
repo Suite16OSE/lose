@@ -208,6 +208,7 @@ show_help:                  ; Only shown on /? and doesn't return.
     call print_newline  ; finish with newline
     ret
 
+; Eventually this will be just a pure version check/grabber but we'll short circuit the abort code here too for now.
 check_win_version:
     push ax
     push bx
