@@ -54,6 +54,7 @@ start:
     xor ax, ax              ; ensure AX (and AL) are zero
     call check_dos_version  ; we need at least 3.1
     call init_memory        ; initialize LOSE.COM memory
+    call get_original_vectors ; get the original interrupt vectors for int 0x23 and int 0x2f 
     call print_cmdline      ; print initial command line, AL=0 for "Old", 1 for "New"
     call check_win_version  ; Check if Windows is running
     mov byte ah, [i_running]; are we running already?
@@ -319,6 +320,23 @@ init_memory:
     call print_newline
     call exit
     ret
+
+get_original_vectors:       ; save the original interrupt vectors so we can restore them on exit
+    push ax
+    push bx
+    push es
+    mov ax, 0x3523          ; DOS get interrupt vector - 23h / ctrl-c handler
+    int 0x21                ; call DOS
+    mov word [f_int23orig+2], es  ; vector CS is our ES 
+    mov word [f_int23orig], bx    ; vector IP is our BX
+    mov al, 0x2f            ; multiplex vector, since we hook it
+    int 0x21                ; and call DOS again to get the vector
+    mov word [f_int2forig+2], es  ; most current multiplex interrupt
+    mov word [f_int2forig], bx    ; and the local address
+    pop es                  ; restore all the registers we just butchered
+    pop bx
+    pop ax
+    ret                     ; return back to the main startup routine
 
 int23_handler:
     ; Ctrl+C handler
